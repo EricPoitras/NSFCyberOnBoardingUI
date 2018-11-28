@@ -10,29 +10,12 @@
     
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+      
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/main.css">
 
     <title>NSF Cyber OnBoarding Example</title>
       
-    <style>
-        .avatar-container{
-            position: relative;
-        }
-        .avatar-container{
-            position: absolute;
-            left: -25px;
-            top: -25px;
-        }
-        .avatar-left{
-            margin-right: 75px;
-            margin-left: 25px;
-        }
-        .avatar-right{
-            margin-left: 75px;
-        }
-        .avatar-left, .avatar-right{
-            margin-top: 25px;
-        }
-    </style>
   </head>
   <body>  
     <div class="container">
@@ -83,10 +66,25 @@
                           <img id="therapistpic" src="" width="50" height="auto">
                         </div>
                         <div>
+                            <div class="turn_toolbar d-flex justify-content-end">
+                                <span id="feedbackpos1" class="p-1"><i id="feedbackpos1btn" class="fas fa-check-circle"></i></span>
+                                <span id="feedbackneg1" class="p-1"><i id="feedbackneg1btn" class="fas fa-times-circle"></i></span>
+                                <span id="selfexplain1" class="p-1"><i id="selfexplainbtn1" class="fas fa-info-circle"></i></span>
+                            </div>
                             <p><strong>Therapist: </strong><span id="therapisttalkturn1"></span></p>  
                         </div>
                       </div>
                     </div>  
+                  </div>
+                  <div id="feedbackturn1" class="feedbackbubble p-2">
+                    <div id="feedbackstyleturn1" class="alert alert-success" role="alert">
+                        <p id="feedbackmessageturn1"><!-- Feedback is displayed here...--></p>  
+                    </div>       
+                  </div>
+                  <div id="selfexplainturn1" class="selfexplanationbubble p-2">
+                    <div class="alert alert-info" role="alert">
+                        <p id="selfexplainmessageturn1"><!-- Self explanation is displayed here...--></p>  
+                    </div>      
                   </div>
                   <div id="solution" class="p-2">
                     <div class="card">
@@ -95,6 +93,23 @@
                       </div>
                       <div class="card-body">
                           <form>
+                            <div id="multichoiceresponse" class="form-group">
+                                <!--<label for="exampleFormControlTextarea1"><span id="probleminstruction"></span></label>-->
+                                <!--<textarea id="problemsolution" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>-->
+                                <p>Choose a response to the client as the therapist:</p>
+                                <div id="multichoiceitem1" class="alert alert-secondary" role="alert">
+                                   <!-- Multichoice item displayed here -->
+                                </div>
+                                <div id="multichoiceitem2" class="alert alert-secondary" role="alert">
+                                  <!-- Multichoice item displayed here -->
+                                </div>
+                                <div id="multichoiceitem3" class="alert alert-secondary" role="alert">
+                                  <!-- Multichoice item displayed here -->
+                                </div>
+                                <div id="multichoiceitem4" class="alert alert-secondary" role="alert">
+                                  <!-- Multichoice item displayed here -->
+                                </div>
+                            </div>
                             <div id="response" class="form-group">
                                 <label for="exampleFormControlTextarea1"><span id="probleminstruction"></span></label>
                                 <textarea id="problemsolution" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
@@ -109,7 +124,7 @@
                             </div>
                             <div id="validationmessage" class="form-group">
                                 <div class="alert alert-warning" role="alert">
-                                  Please write a response to client before moving on to the next step.
+                                  <!-- Display validation message -->
                                 </div>  
                             </div>
                             <div id="selfexplanation" class="form-group">
@@ -138,10 +153,10 @@
                   <div id="feedback" class="p-2">
                     <div class="card">
                       <div class="card-header">
-                            <h5><i class="fas fa-award"></i> Feedback</h5>
+                            <h5><i class="fas fa-award"></i> Milestone</h5>
                       </div>
                       <div class="card-body">
-                        <p id="feedbackcontent"></p>
+                        <p>Good work, you've practiced how to make a reflection.</p>
                         <button id="nextbtn" type="button" class="btn btn-primary">Let's Move On</button>
                       </div>
                     </div>  
@@ -156,356 +171,18 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-            
+    <script src="js/variables.js"></script>
+    <script src="js/modules.js"></script>
+    <script src="js/view_router.js"></script>
+    <script src="js/elements.js"></script>
+    <script src="js/event_listener.js"></script>
     <script>
-        
-        // Data
-            var textresponsetoclient;
-            var textexplanation;
-            var readytimeleft;
-            var readytimeleftvar;
-            var responsetimeleft;
-            var responsetimeleftvar;
-            var pausestate = false;
-            var modulesequence = 0;
-        
-            var modules={
-                module1:{
-                    instructionalcontent: "<p>Empathy 'is a specifiable and learnable skill for understanding another's meaning through the use of reflective listening. It requires sharp attention to each new client statement, and the continual generation of hypotheses as to the underlying meaning' (Miller and Rollnick, 1991, p. 20). An empathic style communicates respect for and acceptance of clients and their feelings.</p><p>For example, when first meeting a Navajo, the person often is expected to say his name, clan relationship or ethnic origin, and place of origin. Physical contact is kept to a minimum, except for a brief handshake, which may be no more than a soft touch of the palms.</p>",
-                    therapistpic: "assets/avatar8.png",
-                    therapisttalkturn1: "",
-                    clientpic: "assets/avatar7.png",
-                    clienttalkturn1: "Hello, my name is Larry. How are you doing?",
-                    problemdescription: "Introduce yourself for the first time to a Navajo client.",
-                    probleminstruction: "Write a response to the client as the therapist:",
-                    problemtimevalue: "45",
-                    feedbackcontent: "Well done, remember its important to say your name, clan relationship or ethnic origin, and place of origin. Let's move on the next step.",
-                    hintcontent: "<div class='alert alert-primary' role='alert'>For example, when first meeting a Navajo, the person often is expected to say his name, clan relationship or ethnic origin, and place of origin.</div>",
-                    readycountdown: "3"
-                },
-                module2:{
-                    instructionalcontent: "<p>Ethnic and cultural differences must be considered when expressing empathy because they influence how both you and your client interpret verbal and nonverbal communications.</p>",
-                    therapistpic: "assets/avatar8.png",
-                    therapisttalkturn1: "",
-                    clientpic: "assets/avatar7.png",
-                    clienttalkturn1: "I'm feeling kind of blue. I'm feeling anxious at work.",
-                    problemdescription: "Practice how to reflect client statements",
-                    probleminstruction: "Reflect the client statement:",
-                    problemtimevalue: "45",
-                    feedbackcontent: "Keep going, MI is all about reflections. Reflect those client statements!",
-                    hintcontent: "<div class='alert alert-primary' role='alert'>Start to reflect client statements by paraphrasing what the client said.</div>",
-                    readycountdown: "3"
-                }
-            }
-            
         $(document).ready(function(){
             console.log("Document ready...");
             
-            // Views
-            console.log("Views");
-            var instruction = document.getElementById("instruction");
-            console.log(instruction);
-            var problem = document.getElementById("problem");
-            console.log(problem);
-            var talkturn1 = document.getElementById("talkturn1");
-            console.log(talkturn1);
-            var talkturn2 = document.getElementById("talkturn2");
-            console.log(talkturn2);
-            var solution = document.getElementById("solution");
-            console.log(solution);
-            var feedback = document.getElementById("feedback");
-            console.log(feedback);
-            var selfexplanation = document.getElementById("selfexplanation");
-            console.log(selfexplanation);
-            var response = document.getElementById("response");
-            console.log(response);
-            var responsetime = document.getElementById("responsetime");
-            console.log(responsetime);
-            var hintmessage = document.getElementById("hintmessage");
-            console.log(hintmessage);
-            var validationmessage = document.getElementById("validationmessage");
-            console.log(validationmessage);
-            
-            // View Controller Functions
-            function hideallviews(){
-                instruction.style.display = "none";
-                problem.style.display = "none";
-                talkturn1.style.display = "none";
-                talkturn2.style.display = "none";
-                selfexplanation.style.display = "none";
-                responsetime.style.display = "none";
-                solution.style.display = "none";
-                feedback.style.display = "none";
-                hintmessage.style.display = "none";
-                validationmessage.style.display = "none";
-            }
-            
-            function togglebuttonset1(){
-                attemptbtn.style.display = "none";
-                explanationsubmitbtn.style.display = "none";
-                responsesubmitbtn.style.display = "block";
-                pausebtn.style.display = "block";
-                hintbtn.style.display = "block";
-            }
-            
-            function togglebuttonset2(){
-                attemptbtn.style.display = "block";
-                explanationsubmitbtn.style.display = "block";
-                responsesubmitbtn.style.display = "none";
-                pausebtn.style.display = "none";
-                hintbtn.style.display = "none";
-            }
-            
-            // View Main Controller
-            function viewcontroller(view){
-                // Hide all views
-                hideallviews();
-                // Show specific views
-                switch(view){
-                case "instruction":
-                    instruction.style.display = "block";
-                    break;
-                case "problem":
-                    problem.style.display = "block";
-                    readycountdown.textContent = "Ready";
-                    break;
-                case "2turnproblem":
-                    talkturn1.style.display = "block";
-                    solution.style.display = "block";
-                    response.style.display = "block";
-                    problemsolution.disabled = false;
-                    problemsolution.value = "";
-                    problemtimevalue.textContent = responsetimeleft;
-                    responsetime.style.display = "block";
-                    togglebuttonset1();
-                    break;
-                case "selfexplanation":
-                    talkturn1.style.display = "block";
-                    talkturn2.style.display = "block";
-                    solution.style.display = "block";
-                    //response.style.display = "block";
-                    problemsolution.disabled = true;
-                    selfexplanation.style.display = "block";
-                    explanationsolution.value = "";
-                    togglebuttonset2();
-                    break;        
-                case "feedback":
-                    talkturn1.style.display = "block";
-                    talkturn2.style.display = "block";
-                    feedback.style.display = "block";
-                    break;
-                }
-            }
-            
-            // Content
-            console.log("Content");
-            var instructionalcontent = document.getElementById("instructionalcontent");
-            console.log(instructionalcontent);
-            var therapistpic = document.getElementById("therapistpic");
-            console.log(therapistpic);
-            var therapisttalkturn1 = document.getElementById("therapisttalkturn1");
-            console.log(therapisttalkturn1);
-            var clientpic = document.getElementById("clientpic");
-            console.log(clientpic);
-            var clienttalkturn1 = document.getElementById("clienttalkturn1");
-            console.log(clienttalkturn1);
-            var probleminstruction = document.getElementById("probleminstruction");
-            console.log(probleminstruction);
-            var problemtime = document.getElementById("problemtime");
-            console.log(problemtime);
-            var problemtimevalue = document.getElementById("problemtimevalue");
-            console.log(problemtimevalue);
-            var feedbackcontent = document.getElementById("feedbackcontent");
-            console.log(feedbackcontent);
-            var readycountdown = document.getElementById("readycountdown");
-            console.log(readycountdown);
-            var problemdescription = document.getElementById("problemdescription");
-            console.log(problemdescription);
-            
-            // Buttons
-            console.log("Buttons");
-            var startpracticebtn = document.getElementById("startpracticebtn");
-            console.log(startpracticebtn);
-            var readybtn = document.getElementById("readybtn");
-            console.log(readybtn);
-            var hintbtn = document.getElementById("hintbtn");
-            console.log(hintbtn);
-            var pausebtn = document.getElementById("pausebtn");
-            console.log(pausebtn);
-            var attemptbtn = document.getElementById("attemptbtn");
-            console.log(attemptbtn);
-            var responsesubmitbtn = document.getElementById("responsesubmitbtn");
-            console.log(responsesubmitbtn);
-            var explanationsubmitbtn = document.getElementById("explanationsubmitbtn");
-            console.log(explanationsubmitbtn);
-            var nextbtn = document.getElementById("nextbtn");
-            console.log(nextbtn);
-            
-            // Input
-            console.log("Inputs");
-            var problemsolution = document.getElementById("problemsolution");
-            console.log(problemsolution);
-            var explanationsolution = document.getElementById("explanationsolution");
-            console.log(explanationsolution);
-            
-            // Data Get Function - to get the JS object from JSON
-            
-            // Content Controller - Data Set Function - to set the HTML content based on JS object
-            function setdata(moduleid){
-                var id = moduleid;
-                //console.log(id);
-                //console.log(Object.entries(modules)[id][1].instructionalcontent);
-                instructionalcontent.innerHTML = Object.entries(modules)[id][1].instructionalcontent;
-                therapistpic.setAttribute("src",Object.entries(modules)[id][1].therapistpic);
-                therapisttalkturn1.innerHTML = Object.entries(modules)[id][1].therapisttalkturn1;
-                clientpic.setAttribute("src",Object.entries(modules)[id][1].clientpic);
-                clienttalkturn1.innerHTML = Object.entries(modules)[id][1].clienttalkturn1;
-                problemdescription.innerHTML = Object.entries(modules)[id][1].problemdescription;
-                probleminstruction.innerHTML = Object.entries(modules)[id][1].probleminstruction;
-                responsetimeleft = Object.entries(modules)[id][1].problemtimevalue;
-                responsetimeleftvar = responsetimeleft;
-                feedbackcontent.innerHTML = Object.entries(modules)[id][1].feedbackcontent;
-                hintmessage.innerHTML = Object.entries(modules)[id][1].hintcontent;
-                readytimeleft = Object.entries(modules)[id][1].readycountdown;
-                readytimeleftvar = readytimeleft;
-            }
-            
-            // Event Listeners
-            startpracticebtn.addEventListener("click",startpractice);
-            readybtn.addEventListener("click", ready);
-            hintbtn.addEventListener("click", hint);
-            pausebtn.addEventListener("click", pause);
-            attemptbtn.addEventListener("click", attempt);
-            responsesubmitbtn.addEventListener("click", responsesubmit);
-            explanationsubmitbtn.addEventListener("click", explanationsubmit);
-            nextbtn.addEventListener("click", next);
-            
-            // Event Controller Functions
-            function getresponse(){
-                var responsevalue = problemsolution.value;
-                console.log(responsevalue);
-                textresponsetoclient = responsevalue;
-                console.log("Response is stored in variable...");
-            }
-            
-            function getexplanation(){
-                var explanationvalue = explanationsolution.value;
-                console.log(explanationvalue);
-                textexplanation = explanationvalue;
-                console.log("Explanation is stored in variable...");
-            }
-            
-            function setresponse(responsevalue, element){
-                console.log(responsevalue);
-                console.log(element);
-                element.textContent = responsevalue;
-                console.log("Response is set in UI...");
-            }
-            
-            function decrementreadytime(value){
-                readytimeleftvar = --value;
-                console.log(readytimeleftvar);
-                readycountdown.textContent = readytimeleftvar;
-            }
-            
-            function readytimelefttimer(){
-                var Timer1 = setInterval(function(){
-                    //readytimeleftvar = readytimeleft;
-                    decrementreadytime(readytimeleftvar);
-                    if(readytimeleftvar <= 1){
-                        clearInterval(Timer1);
-                    }
-                },1000);
-            } 
-            
-            function decrementresponsetime(value){
-                responsetimeleftvar = -- value;
-                console.log(responsetimeleftvar);
-                problemtimevalue.textContent = responsetimeleftvar;
-            }
-            
-            function responsetimelefttimer(){
-                var Timer2 = setInterval(function(){
-                    //responsetimeleftvar = responsetimeleft;
-                    decrementresponsetime(responsetimeleftvar);
-                    if(responsetimeleftvar <= 1 || pausestate == true){
-                        clearInterval(Timer2);
-                    }
-                },1000)
-            }
-            
-            // Event Controllers
-            function startpractice(){
-                console.log("Event Controller: startpratice()...");
-                readytimeleftvar = readytimeleft;
-                console.log("Reset Timer1...");
-                viewcontroller("problem");
-            }
-            function ready(){
-                console.log("Event Controller: ready()...");
-                readytimelefttimer();
-                setTimeout(function(){
-                    console.log("Reset Timer2...");
-                    pausestate = false;
-                    responsetimeleftvar = responsetimeleft;
-                    viewcontroller("2turnproblem");
-                    responsetimelefttimer();
-                },4000);
-            }
-            function hint(){
-                console.log("Event Controller: hint()...");
-                hintmessage.style.display = "block";
-            }
-            function pause(){
-                console.log("Event Controller: pause()...");
-                if(pausestate==false){
-                    console.log("Pause was "+pausestate);
-                    pausestate = true;
-                    console.log("Pause is "+pausestate);
-                    problemsolution.disabled = true;
-                    pausebtn.innerHTML = "Play";
-                }else{
-                    console.log("Pause was "+pausestate);
-                    pausestate = false;
-                    console.log("Pause is "+pausestate);
-                    problemsolution.disabled = false;
-                    responsetimelefttimer();
-                    pausebtn.innerHTML = "Pause";
-                }
-            }
-            function attempt(){
-                console.log("Event Controller: attempt()...");
-                readytimeleftvar = 0;
-                startpractice();
-            }
-            function responsesubmit(){
-                console.log("Event Controller: responsesubmit()...");
-                getresponse();
-                if(textresponsetoclient == ""){
-                    validationmessage.style.display = "block";
-                }else{
-                    pausestate = true;
-                    responsetimeleftvar = 0;
-                    viewcontroller("selfexplanation");
-                    setresponse(textresponsetoclient,therapisttalkturn1);
-                }                
-            }
-            function explanationsubmit(){
-                console.log("Event Controller: explanationsubmit()...");
-                getexplanation();
-                viewcontroller("feedback");
-            }
-            function next(){
-                console.log("Event Controller: next()...");
-                console.log("Set module sequence id...");
-                ++modulesequence;
-                setdata(modulesequence);
-                viewcontroller("instruction");
-            }
-            
+            // For debugging - stop the app by turning these functions off
             setdata(modulesequence);
-            viewcontroller("instruction");
-            
+            viewcontroller("instruction"); 
         });   
     </script>
   </body>

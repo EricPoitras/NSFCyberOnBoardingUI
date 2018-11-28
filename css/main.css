@@ -1,0 +1,50 @@
+.avatar-container{
+    position: relative;
+}
+.avatar-container{
+    position: absolute;
+    left: -25px;
+    top: -25px;
+}
+.avatar-left{
+    margin-right: 75px;
+    margin-left: 25px;
+}
+.avatar-right{
+    margin-left: 75px;
+}
+.avatar-left, .avatar-right{
+    margin-top: 25px;
+}
+.feedbackbubble div, .selfexplanationbubble div{
+    margin-left: 75px;
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+.turn_toolbar span{
+    position: relative;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.turn_toolbar span i{
+    position: absolute;
+    top: -5px;
+}
+i.fa-check-circle{
+    color: #155724;
+    font-size: 1.25em;
+}
+i.fa-times-circle{
+    color: #721c24;
+    font-size: 1.25em;
+}
+i.fa-info-circle{
+    color: #0c5460;
+    font-size: 1.25em;
+}
+.itemselectcus{
+    color: white;
+    background-color: dimgray;
+    border-color: dimgray;
+    box-shadow: 0 0 5px 5px rgb(128,128,128,0.5);
+}

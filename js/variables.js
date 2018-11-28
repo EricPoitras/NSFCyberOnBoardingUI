@@ -1,0 +1,10 @@
+var textresponsetoclient;
+var itemresponsetoclient;
+var textexplanation;
+var readytimeleft;
+var readytimeleftvar;
+var responsetimeleft;
+var responsetimeleftvar;
+var pausestate = false;
+var modulesequence = 0;
+var inputformat;
