@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+      
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    <title>Vue.js Demo</title>
+      
+    <style>
+        div.Therapist{
+            margin-left: 20%;
+        }  
+        div.Client{
+            margin-right: 20%;
+        }
+        div.Client .alert{
+            display: none;
+        }
+        .Positive .alert-danger, .Positive .alert-info{
+            display: none;
+        }
+        .Negative .alert-success, .Negative .alert-info{
+            display: none;
+        }
+        textarea.Client{
+            display: none;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div id="chatview" class="col-6">
+                <chatwindow v-for="item in messageList" v-bind:message="item" v-bind:class="[item.speaker, item.feedbackstyle]" v-bind:key="item.id">
+                    <!-- Vue.JS component -->
+                </chatwindow>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5>Response</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <p>{{instruction}}</p>
+                            <div id="input_1" class="form-group">
+                                <textarea v-for="item in messageList" v-bind:class="[item.speaker]" v-bind:key="item.id" v-model:value="item.text" id="textareainput" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div id="submit" class="form_group">
+                                <button v-on:click="submit_textresponse($event)" id="submitbtn" class="btn btn-primary">Submit</button><span id="loadicon" class="fa-1x ml-3 text-secondary d-none"><i class="fas fa-spinner fa-pulse"></i> MI Wizard Casting Spells...</span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+      
+    <script>
+        
+        var client_turn_id = -1;
+        var therapist_turn_id = -1;
+        
+        Vue.component('chatwindow',{
+            props: ['message'],
+            template: '<div><div class="card mt-3"><div class="card-body"><p>{{message.speaker}}'+' : '+'{{message.text}}</p></div></div><div class="alert alert-info mb-1 mt-1" role="alert">{{message.feedback}}</div><div class="alert alert-success mb-1 mt-1" role="alert">{{message.feedback}}</div><div class="alert alert-danger mb-1 mt-1" role="alert">{{message.feedback}}</div></div>'
+        })
+        
+        var chatview = new Vue({
+            el: '#chatview',
+            data: {
+                instruction: "Reflect the statements made by the client:",
+                messageList: [
+                    {id: 0, text: 'My drinking upsets my wife.', speaker: 'Client', feedback: '', feedbackstyle: '', MIclassification: '', MIskillcomponent: ''},
+                    {id: 1, text: '', speaker: 'Therapist', feedback: 'Try the following to reflect this statement by paraphrasing it. Why do you think she is upset?', feedbackstyle: "Positive", MIclassification: '', MIskillcomponent: 'reflection'},
+                    {id: 3, text: "I dont even drink that much honestly, I think she's exagerating how much I drink.", speaker: 'Client', feedback: '', feedbackstyle: '', MIclassification: '', MIskillcomponent: ''},
+                    {id: 4, text: '', speaker: 'Therapist', feedback: 'To reflect this statement, you can focus on questioning the client on the frequency of his drinking. For example, how much do you feel is too much drinking?', feedbackstyle: 'Negative', MIclassification: '', MIskillcomponent: 'reflection'}
+                ]
+            },
+            methods:{
+                start_session: function(){
+                    console.log("startsession()...");
+                    console.log("Number of talk turns is equal to " + this.messageList.length);
+                    console.log(document.getElementById("chatview"));
+                    // Hide all talk turns
+                    for(let i = 0; i < this.messageList.length; i++){
+                        console.log(document.getElementById("chatview").childNodes[i]);
+                        document.getElementById("chatview").childNodes[i].style.display = "none";
+                    }
+                    // Hide all textareas
+                    for(let i = 0; i < document.getElementById("input_1").childNodes.length; i++){
+                        console.log(document.getElementById("input_1").childNodes[i]);
+                        document.getElementById("input_1").childNodes[i].style.display = "none";
+                    }
+                    chatview.set_problem(client_turn_id, therapist_turn_id);
+                },
+                set_problem: function(clientturn, therapistturn){
+                    console.log("set_problem()...");
+                    console.log("Previous client turn is equal to "+clientturn);
+                    for(let i = 0; i < this.messageList.length; i++){
+                        console.log(this.messageList[i].speaker);
+                        if(this.messageList[i].speaker == "Client" && i > clientturn){
+                            document.getElementById("chatview").childNodes[i].style.display = "block";
+                            console.log("Client talk turn is displayed...");
+                            client_turn_id = i;
+                            console.log("Client turn id is set to "+client_turn_id);
+                            break;
+                        }
+                    }
+                    console.log("Previous input for therapist talk turn is equal to "+therapistturn);
+                    for(let i = 0; i < this.messageList.length; i++){
+                        console.log(this.messageList[i].speaker);
+                        if(this.messageList[i].speaker == "Therapist" && i > therapistturn){
+                            document.getElementById("input_1").childNodes[i].style.display = "block";
+                            console.log("Input for therapist response is displayed...");
+                            therapist_turn_id = i;
+                            console.log("Therapist turn id is set to "+therapist_turn_id);
+                            break;
+                        }
+                    }
+                },
+                submit_textresponse: function(event){
+                    event.preventDefault();
+                    console.log("submit_textresponse()...");
+                    
+                    // Loading icon and prevent multiple submit
+                    document.getElementById("submitbtn").disabled = true;
+                    document.getElementById("loadicon").classList.remove("d-none");
+                    document.getElementById("loadicon").classList.add("d-inline");
+                    document.getElementById("input_1").childNodes[therapist_turn_id].disabled = true;
+                    
+                    // Send response to API
+                    console.log("Response sent to MI api is equal to : "+this.messageList[therapist_turn_id].text);
+                    var response = this.messageList[therapist_turn_id].text;
+                    
+                    // Integrate with Mike's API - post response to the server
+                    
+                    // Store API MI classification in data table
+                    console.log("Best guess received from MI api is set to :"+this.messageList[therapist_turn_id].MIclassification);
+                    var MIclass = this.messageList[therapist_turn_id].MIclassification;
+                    // Store MI skill component from data table
+                    console.log("Skill component is set to:"+this.messageList[therapist_turn_id].MIskillcomponent);
+                    var MIskill = this.messageList[therapist_turn_id].MIskillcomponent;
+                    
+                    // Define feedback content
+                    var feedbackresponse;
+                    // Define feedback style
+                    var feedbackstyle;
+                    // Store feedback properties in data table
+                    if(MIskill == "reflection" && MIclass == "simple_reflection"){
+                        feedbackresponse = "Your response to the client is a reflection. "+this.messageList[therapist_turn_id].feedback;
+                        feedbackstyle = "Positive";
+                        console.log(feedbackresponse);
+                        
+                    }else if(MIskill == "reflection" && MIclass == "complex_reflection"){
+                        feedbackresponse = "Your response to the client is a reflection. "+this.messageList[therapist_turn_id].feedback;
+                        feedbackstyle = "Positive";
+                        console.log(feedbackresponse);
+                    }else{
+                        feedbackresponse = "Your response to the client is not a reflection. "+this.messageList[therapist_turn_id].feedback;
+                        feedbackstyle = "Negative";
+                        console.log(feedbackresponse);
+                    }
+                    
+                    this.messageList[therapist_turn_id].feedback = feedbackresponse;
+                    this.messageList[therapist_turn_id].feedbackstyle = feedbackstyle;
+                    
+                    setTimeout(chatview.set_solution, 3000);
+                }, 
+                set_solution: function(event){
+                    // Hide loading icon and allow submit
+                    document.getElementById("submitbtn").disabled = false;
+                    document.getElementById("loadicon").classList.remove("d-inline");
+                    document.getElementById("loadicon").classList.add("d-none");
+                    document.getElementById("input_1").childNodes[therapist_turn_id].disabled = false;
+                    
+                    // Display therapist talk turn                    
+                    document.getElementById("chatview").childNodes[therapist_turn_id].style.display = "block";
+                    console.log("Therapist talk turn is displayed...");
+                    document.getElementById("input_1").childNodes[therapist_turn_id].style.display = "none";
+                    console.log("Input for therapist response is not displayed...");
+                    chatview.set_problem(client_turn_id, therapist_turn_id);
+                }
+            }
+        })
+        
+        chatview.start_session();
+        
+    </script>
+  </body>
+</html>
